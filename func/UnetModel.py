@@ -22,26 +22,35 @@ from keras import models
 ## filters = 64, 128, 256, 512, 1024, 2048
 
 model =  models.Sequential()
-model.add(layers.Conv2D(64, (3, 3), activation = 'relu', input_shape = (2000, 301, 29))) ## 1st layer
+
+model.add(layers.Conv2D(filters = 64, kernel_size = (3, 3), activation = 'relu', input_shape = (2000, 301, 29))) ## 1st layer
 model.add(layers.MaxPooling2D(2, 2))
-model.add(layers.Dense(128, (3,3), activation = 'relu', input_shape = (29, 400, 301)))
-model.add(layers.Dense(,))
-model.add(layers.Dense(,))
-model.add(Conv2D(64, ,))
-model.add(MaxPoolind2D(,))
-model.add(layers.Conv2D(64, ))
 
-###### UnetDown
+model.add(layers.Dense(filters = 128, kernel_size = (3,3), activation = 'relu', input_shape = (29, 400, 301)))
+model.add(layers.Dense(filters = 256 , kernel_size = ( , ), activation = , input_shape = ( , , )))
+model.add(layers.Dense(filters = 512 , kernel_size = ( , ), activation = , input_shape = ( , , )))
+model.add(layers.Dense(filters = 1024 , kernel_size = ( , ), activation = , input_shape = ( , , )))
+
+model.add(layers.MaxPooling2D(2, 2))
+model.add(layers.MaxPooling2D(2, 2))
+model.add(layers.MaxPooling2D(2, 2))
+model.add(layers.MaxPooling2D(2, 2))
+
+## UnetDOWN
+'''
+Template = Conv2D + MaxPooling2D
+
 model.add(layers.Conv2D())
-model.add(layers.MaxPooling2D(2,2))
+model.add(layers.MaxPooling2D())
 
-###### UnetUp
-model.add(layers.Conv2D())
-## Transposed convolution
-model.add(layers.Conv2D(, (2, 2), ))
-## model.add(layers.UpsamplingBilinear2D()) ##
+'''
 
-
+## UnetUP
+## if is_deconv = True
+model.add(layers.Conv2DTranspose(filters = , kernel_size = (,), stride = 2) ## Transposed convolution i.e. Deconvolution
+## else
+model.add(layers.UpSampling2D(size = (2,2), interpolation = 'bilinear')
+          
 print('DNN implementation using Keras')
 
 ## Showing both the training and testing data used
@@ -55,6 +64,7 @@ class unetConv2(nn.Module):
     def __init__(self, in_size, out_size, is_batchnorm):
         super(unetConv2, self).__init__()
         # Kernel size: 3*3, Stride: 1, Padding: 1
+      
         if is_batchnorm:
             self.conv1 = nn.Sequential(nn.Conv2d(in_size, out_size, 3, 1, 1),
                                        nn.BatchNorm2d(out_size),
