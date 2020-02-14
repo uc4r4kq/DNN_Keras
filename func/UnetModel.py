@@ -8,10 +8,12 @@ Original code by fangshuyang (yfs2016@hit.edu.cn) // Created on Feb 2018
 
 """
 
+"""
 ## Pytorch
 import torch.nn as nn
 import torch
 import torch.nn.functional as F
+"""
 
 ## Keras' Implementation
 import numpy as np
@@ -21,19 +23,15 @@ from keras import models
 
 ## Kernel size = 3*3
 ## Activation = ReLU
-
 ## Initial data = (2000, 301, 29)
 ## After the first MaxPooling2D: (29, 401, 301)
 
+## Random test
 data_set_test = np.random.randn(401, 301)
 
 model =  models.Sequential()
 
 print('DNN implementation using Keras')
-
-## Showing both the training and testing data used
-##print('Training data: ' + str(len(train_data))) ## #'s of training samples
-##print('Testing data: ' + str(len(test_data)) ## #'s of testing samples
 
 ##class unetConv2(nn.Module):
 class unetConv2(model): ### ??
@@ -51,9 +49,9 @@ class unetConv2(model): ### ??
                                    layers.BatchNormalization(out_size))
 
         else:
-            self.conv1 = nn.Sequential(layers.Conv2d(in_size, out_size, 3, 1, 1, activation = 'relu')
+            self.conv1 = model.add(layers.Conv2d(in_size, out_size, 3, 1, 1, activation = 'relu'))
 
-            self.conv2 = nn.Sequential(nn.Conv2d(out_size, out_size, 3, 1, 1, activation = 'relu')
+            self.conv2 = model.add(layers.Conv2d(out_size, out_size, 3, 1, 1, activation = 'relu'))
 
                                        
     def forward(self, inputs):
@@ -83,7 +81,7 @@ class unetUp(model):
         self.conv = unetConv2(in_size, out_size, True)
         # Transposed convolution
         if is_deconv:
-            self.up = model.add(layers.Conv2DTranspose(in_size, kernel_size=2,stride=2)))
+            self.up = model.add(layers.Conv2DTranspose(in_size, kernel_size=2,stride=2))
         else:
             self.up = model.add(layers.Upsampling2D(size = (2, 2), interpolation = 'bilinear'))
 
@@ -117,7 +115,7 @@ class UnetModel(model):
         self.up3     = unetUp(filters[3], filters[2], self.is_deconv)
         self.up2     = unetUp(filters[2], filters[1], self.is_deconv)
         self.up1     = unetUp(filters[1], filters[0], self.is_deconv)
-        self.final   = nn.Conv2d(filters[0],self.n_classes, 1)
+        self.final   = model.add(layers.Conv2d(filters[0],self.n_classes, 1))
         
     def forward(self, inputs,label_dsp_dim):
         down1  = self.down1(inputs)
@@ -141,10 +139,10 @@ class UnetModel(model):
                 m.weight.data.normal_(0, sqrt(2. / n))
                 if m.bias is not None:
                     m.bias.data.zero_()
-            elif isinstance(m, nn.BatchNorm2d):
+            elif isinstance(m, keras.layers.BatchNormalization):
                 m.weight.data.fill_(1)
                 m.bias.data.zero_()
-            elif isinstance(m,nn.ConvTranspose2d):
+            elif isinstance(m, keras.layers.Conv2DTranspose):
                 n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
                 m.weight.data.normal_(0, sqrt(2. / n))
                 if m.bias is not None:
