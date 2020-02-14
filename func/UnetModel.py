@@ -15,79 +15,60 @@ import torch.nn.functional as F
 
 ## Keras' Implementation
 import numpy as np
+from numpy import random
 from keras import layers
 from keras import models
 
 ## Kernel size = 3*3
-## filters = 64, 128, 256, 512, 1024, 2048
+## Activation = ReLU
+
+## Initial data = (2000, 301, 29)
+## After the first MaxPooling2D: (29, 401, 301)
+
+data_set_test = np.random.randn(401, 301)
 
 model =  models.Sequential()
 
-model.add(layers.Conv2D(filters = 64, kernel_size = (3, 3), activation = 'relu', input_shape = (2000, 301, 29))) ## 1st layer
-model.add(layers.MaxPooling2D(2, 2))
-
-model.add(layers.Dense(filters = 128, kernel_size = (3,3), activation = 'relu', input_shape = (29, 400, 301)))
-model.add(layers.Dense(filters = 256 , kernel_size = ( , ), activation = , input_shape = ( , , )))
-model.add(layers.Dense(filters = 512 , kernel_size = ( , ), activation = , input_shape = ( , , )))
-model.add(layers.Dense(filters = 1024 , kernel_size = ( , ), activation = , input_shape = ( , , )))
-
-model.add(layers.MaxPooling2D(2, 2))
-model.add(layers.MaxPooling2D(2, 2))
-model.add(layers.MaxPooling2D(2, 2))
-model.add(layers.MaxPooling2D(2, 2))
-
-## UnetDOWN
-'''
-Template = Conv2D + MaxPooling2D
-
-model.add(layers.Conv2D())
-model.add(layers.MaxPooling2D())
-
-'''
-
-## UnetUP
-## if is_deconv = True
-model.add(layers.Conv2DTranspose(filters = , kernel_size = (,), stride = 2) ## Transposed convolution i.e. Deconvolution
-## else
-model.add(layers.UpSampling2D(size = (2,2), interpolation = 'bilinear')
-          
 print('DNN implementation using Keras')
 
 ## Showing both the training and testing data used
-print('Training data: ' + str(len(train_data))) ## #'s of training samples
-print('Testing data: ' + str(len(test_data)) ## #'s of testing samples
+##print('Training data: ' + str(len(train_data))) ## #'s of training samples
+##print('Testing data: ' + str(len(test_data)) ## #'s of testing samples
 
-## Showing the current model and it's layers
-model.summary()
-
-class unetConv2(nn.Module):
+##class unetConv2(nn.Module):
+class unetConv2(model): ### ??
     def __init__(self, in_size, out_size, is_batchnorm):
         super(unetConv2, self).__init__()
         # Kernel size: 3*3, Stride: 1, Padding: 1
-      
+        # BN = Batch Normalization
+        # Original sequence of operation if is_batchnorm = True
+        # Conv2D, BN, ReLU
         if is_batchnorm:
-            self.conv1 = nn.Sequential(nn.Conv2d(in_size, out_size, 3, 1, 1),
-                                       nn.BatchNorm2d(out_size),
-                                       nn.ReLU(inplace=True),)
-            self.conv2 = nn.Sequential(nn.Conv2d(out_size, out_size, 3, 1, 1),
-                                       nn.BatchNorm2d(out_size),
-                                       nn.ReLU(inplace=True),)
+            self.conv1 = model.add(layers.Conv2D(in_size, out_size, 3, 1, 1, activation = 'relu'),
+                                   layers.BatchNormalization(out_size))
+            
+            self.conv2 = model.add(layers.Conv2D(out_size, out_size, 3, 1, 1, activation = 'relu'),
+                                   layers.BatchNormalization(out_size))
+
         else:
-            self.conv1 = nn.Sequential(nn.Conv2d(in_size, out_size, 3, 1, 1),
-                                       nn.ReLU(inplace=True),)
-            self.conv2 = nn.Sequential(nn.Conv2d(out_size, out_size, 3, 1, 1),
-                                       nn.ReLU(inplace=True),)
+            self.conv1 = nn.Sequential(layers.Conv2d(in_size, out_size, 3, 1, 1, activation = 'relu')
+
+            self.conv2 = nn.Sequential(nn.Conv2d(out_size, out_size, 3, 1, 1, activation = 'relu')
+
+                                       
     def forward(self, inputs):
         outputs = self.conv1(inputs)
         outputs = self.conv2(outputs)
         return outputs
 
 
-class unetDown(nn.Module):
+##class unetDown(nn.Module):
+class unetDown(model): ### ??
     def __init__(self, in_size, out_size, is_batchnorm):
         super(unetDown, self).__init__()
         self.conv = unetConv2(in_size, out_size, is_batchnorm)
-        self.down = nn.MaxPool2d(2, 2, ceil_mode=True)
+        ##self.down = nn.MaxPool2d(2, 2, ceil_mode=True)
+        self.down = model.add(layers.MaxPooling2D(pool_size = (2,2), strides = 1))
 
     def forward(self, inputs):
         outputs = self.conv(inputs)
@@ -95,15 +76,16 @@ class unetDown(nn.Module):
         return outputs
 
 
-class unetUp(nn.Module):
+##class unetUp(nn.Module):
+class unetUp(model):
     def __init__(self, in_size, out_size, is_deconv):
         super(unetUp, self).__init__()
         self.conv = unetConv2(in_size, out_size, True)
         # Transposed convolution
         if is_deconv:
-            self.up = nn.ConvTranspose2d(in_size, out_size, kernel_size=2,stride=2)
+            self.up = model.add(layers.Conv2DTranspose(in_size, kernel_size=2,stride=2)))
         else:
-            self.up = nn.UpsamplingBilinear2d(scale_factor=2)
+            self.up = model.add(layers.Upsampling2D(size = (2, 2), interpolation = 'bilinear'))
 
     def forward(self, inputs1, inputs2):
         outputs2 = self.up(inputs2)
@@ -115,7 +97,8 @@ class unetUp(nn.Module):
         return self.conv(torch.cat([outputs1, outputs2], 1))
 
 
-class  UnetModel(nn.Module):
+##class  UnetModel(nn.Module):
+class UnetModel(model):
     def __init__(self, n_classes, in_channels ,is_deconv, is_batchnorm):
         super(UnetModel, self).__init__()
         self.is_deconv     = is_deconv
@@ -167,3 +150,6 @@ class  UnetModel(nn.Module):
                 if m.bias is not None:
                     m.bias.data.zero_()
 
+
+## Showing the current model and it's layers
+model.summary()
