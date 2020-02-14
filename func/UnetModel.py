@@ -8,6 +8,7 @@ Original code by fangshuyang (yfs2016@hit.edu.cn) // Created on Feb 2018
 
 """
 
+## Pytorch
 import torch.nn as nn
 import torch
 import torch.nn.functional as F
@@ -17,26 +18,38 @@ import numpy as np
 from keras import layers
 from keras import models
 
-model = models.Sequential()
 
 ## Kernel size = 3*3
+## filters = 64, 128, 256, 512, 1024, 2048
 
-model.add(layers.Dense(64, (3, 3), activation = 'relu', input_shape = (, , )))
-model.add(layers.Dense(, activation = '', input_shape = ()))
+model =  models.Sequential()
+model.add(layers.Dense(64, (3, 3), activation = 'relu', input_shape = (2000, 301, 29))) ## 1st layer
+model.add(layers.MaxPooling2D(2, 2))
+model.add(layers.Dense(128, (3,3), activation = 'relu', input_shape = (29, 400, 301)))
 model.add(layers.Dense(,))
 model.add(layers.Dense(,))
-model.add(Conv2D(filters[0], ,))
+model.add(Conv2D(64, ,))
 model.add(MaxPoolind2D(,))
 model.add(layers.Flatten())
+
+###### UnetDown
+model.add(layers.Conv2D())
+model.add(layers.MaxPooling2D(2,2))
+
+###### UnetUp
+model.add(layers.Conv2D())
+## Transposed convolution
+model.add(layers.Conv2D(, (2, 2), ))
+## model.add(layers.UpsamplingBilinear2D()) ##
+
 
 print('DNN implementation using Keras')
 
 ## Showing both the training and testing data used
-print('Training data: ' + str(len(train_data))) ## Training data
-print('Testing data: ' + str(len(test_data)) ## Testing data
+print('Training data: ' + str(len(train_data))) ## #'s of training samples
+print('Testing data: ' + str(len(test_data)) ## #'s of testing samples
 
-
-## Showing the current model
+## Showing the current model and it's layers
 model.summary()
 
 class unetConv2(nn.Module):
