@@ -42,14 +42,14 @@ class unetConv2(model):
         # Original sequence of operation if is_batchnorm = True:
         # Conv2D, BN, ReLU
         if is_batchnorm:
-            self.conv1 = model.add(layers.Conv2D(in_size, kernel_size = (3, 3), strides = (1, 1), padding = 1, activation = 'relu'),
+            self.conv1 = model.add(layers.Conv2D(in_size, (3, 3), strides = (1, 1), padding = 1, activation = 'relu'),
                                    layers.BatchNormalization(out_size))
             
             self.conv2 = model.add(layers.Conv2D(out_size, '''out_size,''' kernel_size = (3, 3), strides = (1, 1), padding = 1, activation = 'relu'),
                                    layers.BatchNormalization(out_size))
 
         else:
-            self.conv1 = model.add(layers.Conv2d(in_size, '''out_size,''' kernel_size = (3, 3) strides = (1, 1), padding  = 1, activation = 'relu'))
+            self.conv1 = model.add(layers.Conv2d(in_size, '''out_size,''' kernel_size = (3, 3), strides = (1, 1), padding  = 1, activation = 'relu'))
 
             self.conv2 = model.add(layers.Conv2d(out_size, '''out_size,''' kernel_size = (3, 3), strides = (1, 1), padding = 1, activation = 'relu'))
 
