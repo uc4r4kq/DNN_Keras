@@ -22,6 +22,7 @@ from keras import layers
 from keras import models
 
 ## Kernel size = 3*3
+## Stride = 1 // Padding = 1
 ## Activation = ReLU
 ## Initial data = (2000, 301, 29)
 ## After the first MaxPooling2D: (29, 401, 301)
@@ -34,11 +35,9 @@ model =  models.Sequential()
 print('DNN implementation using Keras')
 
 ##class unetConv2(nn.Module):
-class unetConv2(model): ### ??
+class unetConv2(model):
     def __init__(self, in_size, out_size, is_batchnorm):
         super(unetConv2, self).__init__()
-        # Kernel size: 3*3, Stride: 1, Padding: 1
-        # BN = Batch Normalization
         # Original sequence of operation if is_batchnorm = True
         # Conv2D, BN, ReLU
         if is_batchnorm:
@@ -61,7 +60,7 @@ class unetConv2(model): ### ??
 
 
 ##class unetDown(nn.Module):
-class unetDown(model): ### ??
+class unetDown(model): 
     def __init__(self, in_size, out_size, is_batchnorm):
         super(unetDown, self).__init__()
         self.conv = unetConv2(in_size, out_size, is_batchnorm)
