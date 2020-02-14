@@ -134,7 +134,7 @@ class UnetModel(model):
     # Initialization of Parameters
     def  _initialize_weights(self):
           for m in self.modules():
-            if isinstance(m, nn.Conv2d):
+            if isinstance(m, keras.layers.Conv2D):
                 n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
                 m.weight.data.normal_(0, sqrt(2. / n))
                 if m.bias is not None:
