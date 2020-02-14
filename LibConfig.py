@@ -6,6 +6,11 @@ Created on Feb 2018
 
 @author: fangshuyang (yfs2016@hit.edu.cn)
 
+
+Changes in Feb 2020
+
+@author: lcupertino (lucas.cupertino@usp.br)
+
 """
 
 ################################################
@@ -13,18 +18,18 @@ Created on Feb 2018
 ################################################
 
 import numpy as np
-import torch
+#import torch
 import os, sys
 sys.path.append(os.getcwd())
 import time
 import pdb
 import argparse
-import torch
-import torch.nn as nn
+#import torch
+#import torch.nn as nn
 import scipy.io
-import torch.utils.data as data_utils
-from torch.autograd import Variable
-import torch.nn.functional as F
+#import torch.utils.data as data_utils
+#from torch.autograd import Variable
+#import torch.nn.functional as F
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
