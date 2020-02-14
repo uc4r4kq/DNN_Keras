@@ -45,13 +45,13 @@ class unetConv2(model):
             self.conv1 = model.add(layers.Conv2D(in_size, (3, 3), strides = (1, 1), padding = 1, activation = 'relu'),
                                    layers.BatchNormalization(out_size))
             
-            self.conv2 = model.add(layers.Conv2D(out_size, '''out_size,''' kernel_size = (3, 3), strides = (1, 1), padding = 1, activation = 'relu'),
+            self.conv2 = model.add(layers.Conv2D(out_size, (3, 3), strides = (1, 1), padding = 1, activation = 'relu'),
                                    layers.BatchNormalization(out_size))
 
         else:
-            self.conv1 = model.add(layers.Conv2d(in_size, '''out_size,''' kernel_size = (3, 3), strides = (1, 1), padding  = 1, activation = 'relu'))
+            self.conv1 = model.add(layers.Conv2d(in_size, (3, 3), strides = (1, 1), padding  = 1, activation = 'relu'))
 
-            self.conv2 = model.add(layers.Conv2d(out_size, '''out_size,''' kernel_size = (3, 3), strides = (1, 1), padding = 1, activation = 'relu'))
+            self.conv2 = model.add(layers.Conv2d(out_size, (3, 3), strides = (1, 1), padding = 1, activation = 'relu'))
 
                                        
     def forward(self, inputs):
@@ -66,7 +66,7 @@ class unetDown(model):
         super(unetDown, self).__init__()
         self.conv = unetConv2(in_size, out_size, is_batchnorm)
         ##self.down = nn.MaxPool2d(2, 2, ceil_mode=True)
-        self.down = model.add(layers.MaxPooling2D(pool_size = (2,2)''', strides = 1'''))
+        self.down = model.add(layers.MaxPooling2D((2,2)))
 
     def forward(self, inputs):
         outputs = self.conv(inputs)
@@ -81,9 +81,9 @@ class unetUp(model):
         self.conv = unetConv2(in_size, out_size, True)
         # Transposed convolution
         if is_deconv:
-            self.up = model.add(layers.Conv2DTranspose(in_size, kernel_size= (2, 2), stride = 2))
+            self.up = model.add(layers.Conv2DTranspose(in_size, (2, 2), stride = 2))
         else:
-            self.up = model.add(layers.Upsampling2D(kernel_size = (2, 2), interpolation = 'bilinear'))
+            self.up = model.add(layers.Upsampling2D((2, 2), interpolation = 'bilinear'))
 
     def forward(self, inputs1, inputs2):
         outputs2 = self.up(inputs2)
