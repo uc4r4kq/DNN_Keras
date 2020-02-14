@@ -52,7 +52,7 @@ class unetConv2(model):
             self.conv1 = model.add(layers.Conv2d(in_size, (3, 3), strides = (1, 1), padding  = 1, activation = 'relu'))
 
             self.conv2 = model.add(layers.Conv2d(out_size, (3, 3), strides = (1, 1), padding = 1, activation = 'relu'))
-
+            
                                        
     def forward(self, inputs):
         outputs = self.conv1(inputs)
