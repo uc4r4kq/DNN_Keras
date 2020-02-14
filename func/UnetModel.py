@@ -18,19 +18,18 @@ import numpy as np
 from keras import layers
 from keras import models
 
-
 ## Kernel size = 3*3
 ## filters = 64, 128, 256, 512, 1024, 2048
 
 model =  models.Sequential()
-model.add(layers.Dense(64, (3, 3), activation = 'relu', input_shape = (2000, 301, 29))) ## 1st layer
+model.add(layers.Conv2D(64, (3, 3), activation = 'relu', input_shape = (2000, 301, 29))) ## 1st layer
 model.add(layers.MaxPooling2D(2, 2))
 model.add(layers.Dense(128, (3,3), activation = 'relu', input_shape = (29, 400, 301)))
 model.add(layers.Dense(,))
 model.add(layers.Dense(,))
 model.add(Conv2D(64, ,))
 model.add(MaxPoolind2D(,))
-model.add(layers.Flatten())
+model.add(layers.Conv2D(64, ))
 
 ###### UnetDown
 model.add(layers.Conv2D())
