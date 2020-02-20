@@ -9,26 +9,62 @@ from keras.optimizers import SGD
 from keras.layers.convolutional import MaxPooling2D, Conv2D
 from keras.utils import np_utils
 from keras.layers.normalization import BatchNormalization
-from keras.layers import Activation, Conv2DTranspose, Input
+from keras.layers import Activation, Conv2DTranspose, Input, concatenate
+#from keras.layers.merge import concatenate
 #import torch
 
-data = np.random.random((400,301,3))
+data = np.random.random((5,400,304,3))
 data = tf.convert_to_tensor(data,dtype=tf.float32)
-print (data.shape)
-linhas=data.shape[0]
-colunas= data.shape[1]
-canais = data.shape[2]
+#print (data.shape)
+linhas=data.shape[1]
+colunas= data.shape[2]
+canais = data.shape[3]
 
+def apply_maxPooling(camada):
+    camada = MaxPooling2D(pool_size=(2,2),padding='same') (camada)
+    return camada
 
-
-
-out_size=16
-inputs = Input((linhas,colunas,canais))
-c1 = Conv2D(filters=out_size, kernel_size=(3, 3), input_shape=(linhas, colunas, canais), strides=1, padding='same') (inputs)
-c1 = BatchNormalization() (c1)
-ac1 = Activation('relu') (c1)
+def reduzir(camada,out_size):
+    camada = Conv2D(filters=out_size, kernel_size=(3, 3), input_shape=(linhas, colunas, canais), strides=1, padding='same') (camada)
+    camada = BatchNormalization() (camada)
+    camada = Activation('relu') (camada)
     
-model = Model(inputs=[inputs], outputs=[c1])
-model.summary()
+    #reaplicando novamente no dado
+    camada = Conv2D(filters=out_size, kernel_size=(3, 3), input_shape=(linhas, colunas, canais), strides=1, padding='same') (camada)
+    camada = BatchNormalization() (camada)
+    camada = Activation('relu') (camada)
+    
+    return camada
+
+def aumentar(camada_corrente,camada_de_reducao_correspondente,out_size):
+    camada = Conv2DTranspose(filters=out_size,kernel_size=(2,2),strides=2,padding='same') (camada_corrente)
+    camada = concatenate([camada,camada_de_reducao_correspondente],axis=3) #aqui concateno o dado após a deconvolução com o dado correspondente na camada de redução
+    camada = reduzir(camada,out_size)
+
+    return camada
 
 
+
+def create_model():
+    inputs = Input((linhas,colunas,canais))
+    
+    filtros=[64,128,256,512,1024]
+    c1 = reduzir(inputs,filtros[0])
+    c2 = reduzir(apply_maxPooling(c1),filtros[1])
+    c3 = reduzir(apply_maxPooling(c2),filtros[2])
+    c4 = reduzir(apply_maxPooling(c3),filtros[3])
+    c5 = reduzir(apply_maxPooling(c4),filtros[4])
+    
+
+    c6 = aumentar(c5,c4,filtros[3])
+    c7 = aumentar(c6,c3,filtros[2])
+    c8 = aumentar(c7,c2,filtros[1])
+    c9 = aumentar(c8,c1,filtros[0])
+    
+   # c10 = c9[:,80:281,:,:]
+    c10 = Conv2D(filters=1, kernel_size=(1, 1), strides=1) (c9)
+    
+    model = Model(inputs=[inputs],outputs=[c10])
+    model.summary()
+
+create_model()
