@@ -9,7 +9,7 @@ from keras.optimizers import SGD
 from keras.layers.convolutional import MaxPooling2D, Conv2D
 from keras.utils import np_utils
 from keras.layers.normalization import BatchNormalization
-from keras.layers import Activation, Conv2DTranspose, Input, concatenate
+from keras.layers import Activation, Conv2DTranspose, Input, concatenate, Cropping2D
 #from keras.layers.merge import concatenate
 #import torch
 
@@ -36,6 +36,23 @@ def reduzir(camada,out_size):
     
     return camada
 
+
+def reduzir_last(camada,out_size):
+    camada = Conv2D(filters=out_size, kernel_size=(3, 3), input_shape=(linhas, colunas, canais), strides=1, padding='same') (camada)
+    camada = BatchNormalization() (camada)
+    camada = Activation('relu') (camada)
+
+    return camada
+
+def aumentar_last(camada_corrente,camada_de_reducao_correspondente,out_size):
+    camada = Conv2DTranspose(filters=out_size,kernel_size=(2,2),strides=2,padding='same') (camada_corrente)
+    camada = concatenate([camada,camada_de_reducao_correspondente],axis=3) #aqui concateno o dado após a deconvolução com o dado correspondente na camada de redução
+    camada = reduzir_last(camada,out_size)
+
+    return camada
+
+
+
 def aumentar(camada_corrente,camada_de_reducao_correspondente,out_size):
     camada = Conv2DTranspose(filters=out_size,kernel_size=(2,2),strides=2,padding='same') (camada_corrente)
     camada = concatenate([camada,camada_de_reducao_correspondente],axis=3) #aqui concateno o dado após a deconvolução com o dado correspondente na camada de redução
@@ -59,12 +76,21 @@ def create_model():
     c6 = aumentar(c5,c4,filtros[3])
     c7 = aumentar(c6,c3,filtros[2])
     c8 = aumentar(c7,c2,filtros[1])
-    c9 = aumentar(c8,c1,filtros[0])
+    c9 = aumentar_last(c8,c1,filtros[0])
     
-   # c10 = c9[:,80:281,:,:]
-    c10 = Conv2D(filters=1, kernel_size=(1, 1), strides=1) (c9)
+    c9 = Cropping2D(cropping=(99, 1)) (c9) #fiz um crop na imagem que era (400,304) e deixei com (202,302)
+    c9 = reduzir_last(c9,filtros[0])
+    c9 = Conv2D(filters=1, kernel_size=(1, 1), strides=1) (c9)
+
+   # c10 = Conv2D(filters=1, kernel_size=(1, 1), strides=1) (c9)
+   # c10 = Cropping2D(cropping=(99, 1)) (c10) #fiz um crop na imagem que era (400,304) e deixei com (202,302)
     
-    model = Model(inputs=[inputs],outputs=[c10])
+   # out_size=1
+   # c10 = Conv2D(filters=out_size, kernel_size=(3, 3), input_shape=(linhas, colunas, canais), strides=1, padding='same') (c10)
+   # c10 = BatchNormalization() (c10)
+   # c10 = Activation('relu') (c10)
+
+    model = Model(inputs=[inputs],outputs=[c9])
     model.summary()
 
 create_model()
