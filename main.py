@@ -1,24 +1,41 @@
 #import matplotlib.pyplot as plt
-#import numpy as np
-#import tensorflow as tf
+import numpy as np
+import tensorflow as tf
 from keras.models import Model#Sequential, Model
-#from keras.layers import Dense
-#from keras.layers import Flatten
-#from keras.layers import Dropout
+from keras.layers import Dense
+from keras.layers import Flatten
+from keras.layers import Dropout
 #from keras.optimizers import SGD
 from keras.layers.convolutional import MaxPooling2D, Conv2D
 #from keras.utils import np_utils
 from keras.layers.normalization import BatchNormalization
 from keras.layers import Activation, Conv2DTranspose, Input, concatenate, Cropping2D
-#from keras.layers.merge import concatenate
+from keras.layers.merge import concatenate
 #import torch
 
-#data = np.random.random((200,400,304,29))
+#data = np.random.random((500,400,304,29))
 #data = tf.convert_to_tensor(data,dtype=tf.float32)
-##print (data.shape)
 #linhas=data.shape[1]
 #colunas= data.shape[2]
 #canais = data.shape[3]
+
+from ParamConfig import *
+from PathConfig import *
+from LibConfig import *
+
+
+train_set,label_set,data_dsp_dim,label_dsp_dim  = DataLoad_Train(train_size=TrainSize,train_data_dir=train_data_dir, \
+                                                                 data_dim=DataDim,in_channels=Inchannels, \
+                                                                 model_dim=ModelDim,data_dsp_blk=data_dsp_blk, \
+                                                                 label_dsp_blk=label_dsp_blk,start=1, \
+                                                                 datafilename=datafilename,dataname=dataname, \
+                                                                 truthfilename=truthfilename,truthname=truthname, folder_dataset=folder_dataset)
+# Change data type (numpy --> tensor)
+
+
+
+
+
 
 def apply_maxPooling(camada):
     camada = MaxPooling2D(pool_size=(2,2),padding='same') (camada)
