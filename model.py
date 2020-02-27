@@ -1,13 +1,13 @@
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
-from keras.models import Sequential, Model
-from keras.layers import Dense
-from keras.layers import Flatten
-from keras.layers import Dropout
-from keras.optimizers import SGD
+from keras.models import Model#Sequential, Model
+#from keras.layers import Dense
+#from keras.layers import Flatten
+#from keras.layers import Dropout
+#from keras.optimizers import SGD
 from keras.layers.convolutional import MaxPooling2D, Conv2D
-from keras.utils import np_utils
+#from keras.utils import np_utils
 from keras.layers.normalization import BatchNormalization
 from keras.layers import Activation, Conv2DTranspose, Input, concatenate, Cropping2D
 #from keras.layers.merge import concatenate
@@ -62,7 +62,7 @@ def aumentar(camada_corrente,camada_de_reducao_correspondente,out_size):
 
 
 
-def create_model():
+def create_model(linhas,colunas,canais):
     inputs = Input((linhas,colunas,canais))
     
     filtros=[64,128,256,512,1024]
@@ -85,4 +85,4 @@ def create_model():
     model = Model(inputs=[inputs],outputs=[c9])
     model.summary()
 
-create_model()
+#create_model(linhas,colunas,canais)
