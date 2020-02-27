@@ -1,6 +1,6 @@
 #import matplotlib.pyplot as plt
-import numpy as np
-import tensorflow as tf
+#import numpy as np
+#import tensorflow as tf
 from keras.models import Model#Sequential, Model
 #from keras.layers import Dense
 #from keras.layers import Flatten
@@ -13,12 +13,12 @@ from keras.layers import Activation, Conv2DTranspose, Input, concatenate, Croppi
 #from keras.layers.merge import concatenate
 #import torch
 
-data = np.random.random((200,400,304,29))
-data = tf.convert_to_tensor(data,dtype=tf.float32)
-#print (data.shape)
-linhas=data.shape[1]
-colunas= data.shape[2]
-canais = data.shape[3]
+#data = np.random.random((200,400,304,29))
+#data = tf.convert_to_tensor(data,dtype=tf.float32)
+##print (data.shape)
+#linhas=data.shape[1]
+#colunas= data.shape[2]
+#canais = data.shape[3]
 
 def apply_maxPooling(camada):
     camada = MaxPooling2D(pool_size=(2,2),padding='same') (camada)

@@ -6,7 +6,7 @@ Created on Thu Feb 27 14:16:28 2020
 @author: jonas
 """
 import numpy as np
-#import tensorflow as tf
+import tensorflow as tf
 
 from model import create_model
 
