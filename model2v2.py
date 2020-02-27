@@ -13,7 +13,7 @@ from keras.layers import Activation, Conv2DTranspose, Input, concatenate, Croppi
 #from keras.layers.merge import concatenate
 #import torch
 
-data = np.random.random((5,400,304,3))
+data = np.random.random((200,400,304,29))
 data = tf.convert_to_tensor(data,dtype=tf.float32)
 #print (data.shape)
 linhas=data.shape[1]
@@ -81,14 +81,6 @@ def create_model():
     c9 = Cropping2D(cropping=(99, 1)) (c9) #fiz um crop na imagem que era (400,304) e deixei com (202,302)
     c9 = reduzir_last(c9,filtros[0])
     c9 = Conv2D(filters=1, kernel_size=(1, 1), strides=1) (c9)
-
-   # c10 = Conv2D(filters=1, kernel_size=(1, 1), strides=1) (c9)
-   # c10 = Cropping2D(cropping=(99, 1)) (c10) #fiz um crop na imagem que era (400,304) e deixei com (202,302)
-    
-   # out_size=1
-   # c10 = Conv2D(filters=out_size, kernel_size=(3, 3), input_shape=(linhas, colunas, canais), strides=1, padding='same') (c10)
-   # c10 = BatchNormalization() (c10)
-   # c10 = Activation('relu') (c10)
 
     model = Model(inputs=[inputs],outputs=[c9])
     model.summary()
