@@ -11,13 +11,14 @@ from keras.layers.convolutional import MaxPooling2D, Conv2D
 from keras.layers.normalization import BatchNormalization
 from keras.layers import Activation, Conv2DTranspose, Input, concatenate, Cropping2D
 from keras.layers.merge import concatenate
+from keras import backend as K
 #import torch
 
-#data = np.random.random((500,400,304,29))
+data = np.random.random((5,400,304,3))
 #data = tf.convert_to_tensor(data,dtype=tf.float32)
-#linhas=data.shape[1]
-#colunas= data.shape[2]
-#canais = data.shape[3]
+linhas=data.shape[1]
+colunas= data.shape[2]
+canais = data.shape[3]
 
 from ParamConfig import *
 from PathConfig import *
@@ -68,6 +69,11 @@ def aumentar_last(camada_corrente,camada_de_reducao_correspondente,out_size):
 
     return camada
 
+#data = np.random.random((500,400,304,29))
+#data = tf.convert_to_tensor(data,dtype=tf.float32)
+#linhas=data.shape[1]
+#colunas= data.shape[2]
+#canais = data.shape[3]
 
 
 def aumentar(camada_corrente,camada_de_reducao_correspondente,out_size):
@@ -76,6 +82,18 @@ def aumentar(camada_corrente,camada_de_reducao_correspondente,out_size):
     camada = reduzir(camada,out_size)
 
     return camada
+
+
+def mean_iou(y_true, y_pred):
+    prec = []
+    for t in np.arange(0.5, 1.0, 0.05):
+        y_pred_ = tf.to_int32(y_pred > t)
+        score, up_opt = tf.metrics.mean_iou(y_true, y_pred_, 2)
+        K.get_session().run(tf.local_variables_initializer())
+        with tf.control_dependencies([up_opt]):
+            score = tf.identity(score)
+        prec.append(score)
+    return K.mean(K.stack(prec), axis=0)
 
 
 
@@ -100,6 +118,7 @@ def create_model(linhas,colunas,canais):
     c9 = Conv2D(filters=1, kernel_size=(1, 1), strides=1) (c9)
 
     model = Model(inputs=[inputs],outputs=[c9])
+    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=[mean_iou])
     model.summary()
 
-#create_model(linhas,colunas,canais)
+create_model(linhas,colunas,canais)
