@@ -25,4 +25,5 @@ import matplotlib.pylab as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 #from func.utils import *
 from func.DataLoad_Train import DataLoad_Train
+from func.DataLoad_Test import DataLoad_Test
 #from func.DataLoad_Test import DataLoad_Test
